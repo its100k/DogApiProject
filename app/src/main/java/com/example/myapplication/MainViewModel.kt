@@ -1,8 +1,7 @@
 package com.example.myapplication
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.example.myapplication.database.DogDao
+import com.example.myapplication.database.DogEntity
 import com.example.myapplication.network.DogImage
 import com.example.myapplication.network.DogImageApi
 
@@ -10,7 +9,8 @@ import com.example.myapplication.network.DogImageApi
 import kotlinx.coroutines.launch
 
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val DogDao: DogDao) : ViewModel() {
+
     private val _currentlyDisplayedImage = MutableLiveData<DogImage>()
     val currentlyDisplayedImage: LiveData<DogImage> = _currentlyDisplayedImage
 
@@ -26,5 +26,25 @@ class MainViewModel : ViewModel() {
 
         }
     }
-}
 
+    fun addDog(dogEntity: DogEntity) {
+        viewModelScope.launch {
+            DogDao.addDogImage(dogEntity)
+        }
+    }
+
+    fun getAllDogs(): LiveData<List<DogEntity>> {
+        return DogDao.getAllDogImages().asLiveData()
+    }
+
+    class DogViewModelFactory(
+        private val dogDao: DogDao
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(MainViewModel::class.java))
+                @Suppress("UNCHECKED_CAST")
+                return MainViewModel(dogDao) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
