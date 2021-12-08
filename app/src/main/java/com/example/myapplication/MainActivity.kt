@@ -21,11 +21,7 @@ import com.squareup.picasso.Picasso
             super.onCreate(savedInstanceState)
             setContentView(R.layout.activity_main)
 
-   override fun onCreate(savedInstanceState: Bundle?) {
 
-        super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_main)
 
 
         val changeDogButton: Button = findViewById(R.id.button2)
@@ -57,6 +53,6 @@ import com.squareup.picasso.Picasso
 
         }
 
-        }
+
 
 
